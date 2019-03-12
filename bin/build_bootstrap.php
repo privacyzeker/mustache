@@ -23,7 +23,7 @@
 $baseDir = realpath(dirname(__FILE__) . '/..');
 
 require $baseDir . '/src/Mustache/Autoloader.php';
-Mustache_Autoloader::register();
+\Mustache\Autoloader::register();
 
 // delete the old file
 $file = $baseDir . '/mustache.php';
@@ -91,16 +91,18 @@ class SymfonyClassCollectionLoader
  */
 EOS;
 
-    /**
-     * Loads a list of classes and caches them in one big file.
-     *
-     * @param array  $classes   An array of classes to load
-     * @param string $cacheDir  A cache directory
-     * @param string $name      The cache name prefix
-     * @param string $extension File extension of the resulting file
-     *
-     * @throws InvalidArgumentException When class can't be loaded
-     */
+
+        /**
+         * Loads a list of classes and caches them in one big file.
+         *
+         * @param array  $classes   An array of classes to load
+         * @param string $cacheDir  A cache directory
+         * @param string $name      The cache name prefix
+         * @param string $extension File extension of the resulting file
+         *
+         * @throws InvalidArgumentException When class can't be loaded
+         * @throws ReflectionException
+         */
     public static function load(array $classes, $cacheDir, $name, $extension = '.php')
     {
         // each $name can only be loaded once per PHP process

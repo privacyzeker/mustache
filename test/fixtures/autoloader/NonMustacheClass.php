@@ -11,5 +11,5 @@
 
 class NonMustacheClass
 {
-    // noop
+        // noop
 }

@@ -11,5 +11,5 @@
 
 class Mustache_Foo
 {
-    // nada
+        // nada
 }

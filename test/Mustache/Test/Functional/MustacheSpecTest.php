@@ -17,105 +17,117 @@
  */
 class Mustache_Test_Functional_MustacheSpecTest extends Mustache_Test_SpecTestCase
 {
-    /**
-     * For some reason data providers can't mark tests skipped, so this test exists
-     * simply to provide a 'skipped' test if the `spec` submodule isn't initialized.
-     */
-    public function testSpecInitialized()
-    {
-        if (!file_exists(dirname(__FILE__) . '/../../../../vendor/spec/specs/')) {
-            $this->markTestSkipped('Mustache spec submodule not initialized: run "git submodule update --init"');
+        /**
+         * For some reason data providers can't mark tests skipped, so this test exists
+         * simply to provide a 'skipped' test if the `spec` submodule isn't initialized.
+         */
+        public function testSpecInitialized()
+        {
+                if (!file_exists(dirname(__FILE__) . '/../../../../vendor/spec/specs/')) {
+                        $this->markTestSkipped('Mustache spec submodule not initialized: run "git submodule update --init"');
+                }
         }
-    }
 
-    /**
-     * @group comments
-     * @dataProvider loadCommentSpec
-     */
-    public function testCommentSpec($desc, $source, $partials, $data, $expected)
-    {
-        $template = self::loadTemplate($source, $partials);
-        $this->assertEquals($expected, $template->render($data), $desc);
-    }
 
-    public function loadCommentSpec()
-    {
-        return $this->loadSpec('comments');
-    }
+        /**
+         * @group        comments
+         * @dataProvider loadCommentSpec
+         */
+        public function testCommentSpec($desc, $source, $partials, $data, $expected)
+        {
+                $template = self::loadTemplate($source, $partials);
+                $this->assertEquals($expected, $template->render($data), $desc);
+        }
 
-    /**
-     * @group delimiters
-     * @dataProvider loadDelimitersSpec
-     */
-    public function testDelimitersSpec($desc, $source, $partials, $data, $expected)
-    {
-        $template = self::loadTemplate($source, $partials);
-        $this->assertEquals($expected, $template->render($data), $desc);
-    }
 
-    public function loadDelimitersSpec()
-    {
-        return $this->loadSpec('delimiters');
-    }
+        public function loadCommentSpec()
+        {
+                return $this->loadSpec('comments');
+        }
 
-    /**
-     * @group interpolation
-     * @dataProvider loadInterpolationSpec
-     */
-    public function testInterpolationSpec($desc, $source, $partials, $data, $expected)
-    {
-        $template = self::loadTemplate($source, $partials);
-        $this->assertEquals($expected, $template->render($data), $desc);
-    }
 
-    public function loadInterpolationSpec()
-    {
-        return $this->loadSpec('interpolation');
-    }
+        /**
+         * @group        delimiters
+         * @dataProvider loadDelimitersSpec
+         */
+        public function testDelimitersSpec($desc, $source, $partials, $data, $expected)
+        {
+                $template = self::loadTemplate($source, $partials);
+                $this->assertEquals($expected, $template->render($data), $desc);
+        }
 
-    /**
-     * @group inverted
-     * @group inverted-sections
-     * @dataProvider loadInvertedSpec
-     */
-    public function testInvertedSpec($desc, $source, $partials, $data, $expected)
-    {
-        $template = self::loadTemplate($source, $partials);
-        $this->assertEquals($expected, $template->render($data), $desc);
-    }
 
-    public function loadInvertedSpec()
-    {
-        return $this->loadSpec('inverted');
-    }
+        public function loadDelimitersSpec()
+        {
+                return $this->loadSpec('delimiters');
+        }
 
-    /**
-     * @group partials
-     * @dataProvider loadPartialsSpec
-     */
-    public function testPartialsSpec($desc, $source, $partials, $data, $expected)
-    {
-        $template = self::loadTemplate($source, $partials);
-        $this->assertEquals($expected, $template->render($data), $desc);
-    }
 
-    public function loadPartialsSpec()
-    {
-        return $this->loadSpec('partials');
-    }
+        /**
+         * @group        interpolation
+         * @dataProvider loadInterpolationSpec
+         */
+        public function testInterpolationSpec($desc, $source, $partials, $data, $expected)
+        {
+                $template = self::loadTemplate($source, $partials);
+                $this->assertEquals($expected, $template->render($data), $desc);
+        }
 
-    /**
-     * @group sections
-     * @dataProvider loadSectionsSpec
-     */
-    public function testSectionsSpec($desc, $source, $partials, $data, $expected)
-    {
-        $template = self::loadTemplate($source, $partials);
-        $this->assertEquals($expected, $template->render($data), $desc);
-    }
 
-    public function loadSectionsSpec()
-    {
-        return $this->loadSpec('sections');
-    }
+        public function loadInterpolationSpec()
+        {
+                return $this->loadSpec('interpolation');
+        }
+
+
+        /**
+         * @group        inverted
+         * @group        inverted-sections
+         * @dataProvider loadInvertedSpec
+         */
+        public function testInvertedSpec($desc, $source, $partials, $data, $expected)
+        {
+                $template = self::loadTemplate($source, $partials);
+                $this->assertEquals($expected, $template->render($data), $desc);
+        }
+
+
+        public function loadInvertedSpec()
+        {
+                return $this->loadSpec('inverted');
+        }
+
+
+        /**
+         * @group        partials
+         * @dataProvider loadPartialsSpec
+         */
+        public function testPartialsSpec($desc, $source, $partials, $data, $expected)
+        {
+                $template = self::loadTemplate($source, $partials);
+                $this->assertEquals($expected, $template->render($data), $desc);
+        }
+
+
+        public function loadPartialsSpec()
+        {
+                return $this->loadSpec('partials');
+        }
+
+
+        /**
+         * @group        sections
+         * @dataProvider loadSectionsSpec
+         */
+        public function testSectionsSpec($desc, $source, $partials, $data, $expected)
+        {
+                $template = self::loadTemplate($source, $partials);
+                $this->assertEquals($expected, $template->render($data), $desc);
+        }
+
+
+        public function loadSectionsSpec()
+        {
+                return $this->loadSpec('sections');
+        }
 }

@@ -14,42 +14,45 @@
  */
 class Mustache_Test_TemplateTest extends PHPUnit_Framework_TestCase
 {
-    public function testConstructor()
-    {
-        $mustache = new Mustache_Engine();
-        $template = new Mustache_Test_TemplateStub($mustache);
-        $this->assertSame($mustache, $template->getMustache());
-    }
-
-    public function testRendering()
-    {
-        $rendered = '<< wheee >>';
-        $mustache = new Mustache_Engine();
-        $template = new Mustache_Test_TemplateStub($mustache);
-        $template->rendered = $rendered;
-        $context  = new Mustache_Context();
-
-        if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
-            $this->assertEquals($rendered, $template());
+        public function testConstructor()
+        {
+                $mustache = new \Mustache\Engine();
+                $template = new Mustache_Test_TemplateStub($mustache);
+                $this->assertSame($mustache, $template->getMustache());
         }
 
-        $this->assertEquals($rendered, $template->render());
-        $this->assertEquals($rendered, $template->renderInternal($context));
-        $this->assertEquals($rendered, $template->render(array('foo' => 'bar')));
-    }
+
+        public function testRendering()
+        {
+                $rendered = '<< wheee >>';
+                $mustache = new \Mustache\Engine();
+                $template = new Mustache_Test_TemplateStub($mustache);
+                $template->rendered = $rendered;
+                $context = new \Mustache\Context();
+
+                if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
+                        $this->assertEquals($rendered, $template());
+                }
+
+                $this->assertEquals($rendered, $template->render());
+                $this->assertEquals($rendered, $template->renderInternal($context));
+                $this->assertEquals($rendered, $template->render(['foo' => 'bar']));
+        }
 }
 
-class Mustache_Test_TemplateStub extends Mustache_Template
+class Mustache_Test_TemplateStub extends \Mustache\Template
 {
-    public $rendered;
+        public $rendered;
 
-    public function getMustache()
-    {
-        return $this->mustache;
-    }
 
-    public function renderInternal(Mustache_Context $context, $indent = '', $escape = false)
-    {
-        return $this->rendered;
-    }
+        public function getMustache()
+        {
+                return $this->mustache;
+        }
+
+
+        public function renderInternal(\Mustache\Context $context, $indent = '')
+        {
+                return $this->rendered;
+        }
 }

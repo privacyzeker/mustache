@@ -11,5 +11,5 @@
 
 class NestedPartials
 {
-    public $val = 'FOURTH!';
+        public $val = 'FOURTH!';
 }

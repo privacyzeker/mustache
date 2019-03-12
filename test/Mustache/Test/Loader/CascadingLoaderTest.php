@@ -14,27 +14,28 @@
  */
 class Mustache_Test_Loader_CascadingLoaderTest extends PHPUnit_Framework_TestCase
 {
-    public function testLoadTemplates()
-    {
-        $loader = new Mustache_Loader_CascadingLoader(array(
-            new Mustache_Loader_ArrayLoader(array('foo' => '{{ foo }}')),
-            new Mustache_Loader_ArrayLoader(array('bar' => '{{#bar}}BAR{{/bar}}')),
-        ));
+        public function testLoadTemplates()
+        {
+                $loader = new \Mustache\Loader\CascadingLoader([
+                        new \Mustache\Loader\ArrayLoader(['foo' => '{{ foo }}']),
+                        new \Mustache\Loader\ArrayLoader(['bar' => '{{#bar}}BAR{{/bar}}']),
+                ]);
 
-        $this->assertEquals('{{ foo }}', $loader->load('foo'));
-        $this->assertEquals('{{#bar}}BAR{{/bar}}', $loader->load('bar'));
-    }
+                $this->assertEquals('{{ foo }}', $loader->load('foo'));
+                $this->assertEquals('{{#bar}}BAR{{/bar}}', $loader->load('bar'));
+        }
 
-    /**
-     * @expectedException Mustache_Exception_UnknownTemplateException
-     */
-    public function testMissingTemplatesThrowExceptions()
-    {
-        $loader = new Mustache_Loader_CascadingLoader(array(
-            new Mustache_Loader_ArrayLoader(array('foo' => '{{ foo }}')),
-            new Mustache_Loader_ArrayLoader(array('bar' => '{{#bar}}BAR{{/bar}}')),
-        ));
 
-        $loader->load('not_a_real_template');
-    }
+        /**
+         * @expectedException \Mustache\Exception\UnknownTemplateException
+         */
+        public function testMissingTemplatesThrowExceptions()
+        {
+                $loader = new \Mustache\Loader\CascadingLoader([
+                        new \Mustache\Loader\ArrayLoader(['foo' => '{{ foo }}']),
+                        new \Mustache\Loader\ArrayLoader(['bar' => '{{#bar}}BAR{{/bar}}']),
+                ]);
+
+                $loader->load('not_a_real_template');
+        }
 }

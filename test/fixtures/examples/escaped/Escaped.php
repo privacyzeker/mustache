@@ -11,5 +11,5 @@
 
 class Escaped
 {
-    public $title = '"Bear" > "Shark"';
+        public $title = '"Bear" > "Shark"';
 }

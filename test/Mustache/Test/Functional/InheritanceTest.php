@@ -15,529 +15,562 @@
  */
 class Mustache_Test_Functional_InheritanceTest extends PHPUnit_Framework_TestCase
 {
-    private $mustache;
+        /**
+         * @var \Mustache\Engine
+         */
+        private $mustache;
 
-    public function setUp()
-    {
-        $this->mustache = new Mustache_Engine(array(
-            'pragmas' => array(Mustache_Engine::PRAGMA_BLOCKS),
-        ));
-    }
 
-    public function getIllegalInheritanceExamples()
-    {
-        return array(
-            array(
-                array(
-                    'foo' => '{{$baz}}default content{{/baz}}',
-                ),
-                array(
-                    'bar' => 'set by user',
-                ),
-                '{{< foo }}{{# bar }}{{$ baz }}{{/ baz }}{{/ bar }}{{/ foo }}',
-            ),
-            array(
-                array(
-                    'foo' => '{{$baz}}default content{{/baz}}',
-                ),
-                array(
-                ),
-                '{{<foo}}{{^bar}}{{$baz}}set by template{{/baz}}{{/bar}}{{/foo}}',
-            ),
-            array(
-                array(
-                    'foo' => '{{$baz}}default content{{/baz}}',
-                    'qux' => 'I am a partial',
-                ),
-                array(
-                ),
-                '{{<foo}}{{>qux}}{{$baz}}set by template{{/baz}}{{/foo}}',
-            ),
-            array(
-                array(
-                    'foo' => '{{$baz}}default content{{/baz}}',
-                ),
-                array(),
-                '{{<foo}}{{=<% %>=}}<%={{ }}=%>{{/foo}}',
-            ),
-        );
-    }
+        public function setUp()
+        {
+                $this->mustache = new \Mustache\Engine([
+                        'pragmas' => [\Mustache\Engine::PRAGMA_BLOCKS],
+                ]);
+        }
 
-    public function getLegalInheritanceExamples()
-    {
-        return array(
-            array(
-                array(
-                    'foo' => '{{$baz}}default content{{/baz}}',
-                ),
-                array(
-                    'bar' => 'set by user',
-                ),
-                '{{<foo}}{{bar}}{{$baz}}override{{/baz}}{{/foo}}',
-                'override',
-            ),
-            array(
-                array(
-                    'foo' => '{{$baz}}default content{{/baz}}',
-                ),
-                array(
-                ),
-                '{{<foo}}{{! ignore me }}{{$baz}}set by template{{/baz}}{{/foo}}',
-                'set by template',
-            ),
-            array(
-                array(
-                    'foo' => '{{$baz}}defualt content{{/baz}}',
-                ),
-                array(),
-                '{{<foo}}set by template{{$baz}}also set by template{{/baz}}{{/foo}}',
-                'also set by template',
-            ),
-            array(
-                array(
-                    'foo' => '{{$a}}FAIL!{{/a}}',
-                    'bar' => 'WIN!!',
-                ),
-                array(),
-                '{{<foo}}{{$a}}{{<bar}}FAIL{{/bar}}{{/a}}{{/foo}}',
-                'WIN!!',
-            ),
-        );
-    }
 
-    public function testDefaultContent()
-    {
-        $tpl = $this->mustache->loadTemplate('{{$title}}Default title{{/title}}');
+        public function getIllegalInheritanceExamples()
+        {
+                return [
+                        [
+                                [
+                                        'foo' => '{{$baz}}default content{{/baz}}',
+                                ],
+                                [
+                                        'bar' => 'set by user',
+                                ],
+                                '{{< foo }}{{# bar }}{{$ baz }}{{/ baz }}{{/ bar }}{{/ foo }}',
+                        ],
+                        [
+                                [
+                                        'foo' => '{{$baz}}default content{{/baz}}',
+                                ],
+                                [
+                                ],
+                                '{{<foo}}{{^bar}}{{$baz}}set by template{{/baz}}{{/bar}}{{/foo}}',
+                        ],
+                        [
+                                [
+                                        'foo' => '{{$baz}}default content{{/baz}}',
+                                        'qux' => 'I am a partial',
+                                ],
+                                [
+                                ],
+                                '{{<foo}}{{>qux}}{{$baz}}set by template{{/baz}}{{/foo}}',
+                        ],
+                        [
+                                [
+                                        'foo' => '{{$baz}}default content{{/baz}}',
+                                ],
+                                [],
+                                '{{<foo}}{{=<% %>=}}<%={{ }}=%>{{/foo}}',
+                        ],
+                ];
+        }
 
-        $data = array();
 
-        $this->assertEquals('Default title', $tpl->render($data));
-    }
+        public function getLegalInheritanceExamples()
+        {
+                return [
+                        [
+                                [
+                                        'foo' => '{{$baz}}default content{{/baz}}',
+                                ],
+                                [
+                                        'bar' => 'set by user',
+                                ],
+                                '{{<foo}}{{bar}}{{$baz}}override{{/baz}}{{/foo}}',
+                                'override',
+                        ],
+                        [
+                                [
+                                        'foo' => '{{$baz}}default content{{/baz}}',
+                                ],
+                                [
+                                ],
+                                '{{<foo}}{{! ignore me }}{{$baz}}set by template{{/baz}}{{/foo}}',
+                                'set by template',
+                        ],
+                        [
+                                [
+                                        'foo' => '{{$baz}}defualt content{{/baz}}',
+                                ],
+                                [],
+                                '{{<foo}}set by template{{$baz}}also set by template{{/baz}}{{/foo}}',
+                                'also set by template',
+                        ],
+                        [
+                                [
+                                        'foo' => '{{$a}}FAIL!{{/a}}',
+                                        'bar' => 'WIN!!',
+                                ],
+                                [],
+                                '{{<foo}}{{$a}}{{<bar}}FAIL{{/bar}}{{/a}}{{/foo}}',
+                                'WIN!!',
+                        ],
+                ];
+        }
 
-    public function testDefaultContentRendersVariables()
-    {
-        $tpl = $this->mustache->loadTemplate('{{$foo}}default {{bar}} content{{/foo}}');
 
-        $data = array(
-            'bar' => 'baz',
-        );
+        public function testDefaultContent()
+        {
+                $tpl = $this->mustache->loadTemplate('{{$title}}Default title{{/title}}');
 
-        $this->assertEquals('default baz content', $tpl->render($data));
-    }
+                $data = [];
 
-    public function testDefaultContentRendersTripleMustacheVariables()
-    {
-        $tpl = $this->mustache->loadTemplate('{{$foo}}default {{{bar}}} content{{/foo}}');
+                $this->assertEquals('Default title', $tpl->render($data));
+        }
 
-        $data = array(
-            'bar' => '<baz>',
-        );
 
-        $this->assertEquals('default <baz> content', $tpl->render($data));
-    }
+        public function testDefaultContentRendersVariables()
+        {
+                $tpl = $this->mustache->loadTemplate('{{$foo}}default {{bar}} content{{/foo}}');
 
-    public function testDefaultContentRendersSections()
-    {
-        $tpl = $this->mustache->loadTemplate(
-            '{{$foo}}default {{#bar}}{{baz}}{{/bar}} content{{/foo}}'
-        );
+                $data = [
+                        'bar' => 'baz',
+                ];
 
-        $data = array(
-            'bar' => array('baz' => 'qux'),
-        );
+                $this->assertEquals('default baz content', $tpl->render($data));
+        }
 
-        $this->assertEquals('default qux content', $tpl->render($data));
-    }
 
-    public function testDefaultContentRendersNegativeSections()
-    {
-        $tpl = $this->mustache->loadTemplate(
-            '{{$foo}}default {{^bar}}{{baz}}{{/bar}} content{{/foo}}'
-        );
+        public function testDefaultContentRendersTripleMustacheVariables()
+        {
+                $tpl = $this->mustache->loadTemplate('{{$foo}}default {{{bar}}} content{{/foo}}');
 
-        $data = array(
-            'foo' => array('bar' => 'qux'),
-            'baz' => 'three',
-        );
+                $data = [
+                        'bar' => '<baz>',
+                ];
 
-        $this->assertEquals('default three content', $tpl->render($data));
-    }
+                $this->assertEquals('default <baz> content', $tpl->render($data));
+        }
 
-    public function testMustacheInjectionInDefaultContent()
-    {
-        $tpl = $this->mustache->loadTemplate(
-            '{{$foo}}default {{#bar}}{{baz}}{{/bar}} content{{/foo}}'
-        );
 
-        $data = array(
-            'bar' => array('baz' => '{{qux}}'),
-        );
+        public function testDefaultContentRendersSections()
+        {
+                $tpl = $this->mustache->loadTemplate(
+                        '{{$foo}}default {{#bar}}{{baz}}{{/bar}} content{{/foo}}'
+                );
 
-        $this->assertEquals('default {{qux}} content', $tpl->render($data));
-    }
+                $data = [
+                        'bar' => ['baz' => 'qux'],
+                ];
 
-    public function testDefaultContentRenderedInsideIncludedTemplates()
-    {
-        $partials = array(
-            'include' => '{{$foo}}default content{{/foo}}',
-        );
+                $this->assertEquals('default qux content', $tpl->render($data));
+        }
 
-        $this->mustache->setPartials($partials);
 
-        $tpl = $this->mustache->loadTemplate(
-            '{{<include}}{{/include}}'
-        );
+        public function testDefaultContentRendersNegativeSections()
+        {
+                $tpl = $this->mustache->loadTemplate(
+                        '{{$foo}}default {{^bar}}{{baz}}{{/bar}} content{{/foo}}'
+                );
 
-        $data = array();
+                $data = [
+                        'foo' => ['bar' => 'qux'],
+                        'baz' => 'three',
+                ];
 
-        $this->assertEquals('default content', $tpl->render($data));
-    }
+                $this->assertEquals('default three content', $tpl->render($data));
+        }
 
-    public function testOverriddenContent()
-    {
-        $partials = array(
-            'super' => '...{{$title}}Default title{{/title}}...',
-        );
 
-        $this->mustache->setPartials($partials);
+        public function testMustacheInjectionInDefaultContent()
+        {
+                $tpl = $this->mustache->loadTemplate(
+                        '{{$foo}}default {{#bar}}{{baz}}{{/bar}} content{{/foo}}'
+                );
 
-        $tpl = $this->mustache->loadTemplate(
-            '{{<super}}{{$title}}sub template title{{/title}}{{/super}}'
-        );
+                $data = [
+                        'bar' => ['baz' => '{{qux}}'],
+                ];
 
-        $data = array();
+                $this->assertEquals('default {{qux}} content', $tpl->render($data));
+        }
 
-        $this->assertEquals('...sub template title...', $tpl->render($data));
-    }
 
-    public function testOverriddenPartial()
-    {
-        $partials = array(
-            'partial' => '|{{$stuff}}...{{/stuff}}{{$default}} default{{/default}}|',
-        );
+        public function testDefaultContentRenderedInsideIncludedTemplates()
+        {
+                $partials = [
+                        'include' => '{{$foo}}default content{{/foo}}',
+                ];
 
-        $this->mustache->setPartials($partials);
+                $this->mustache->setPartials($partials);
 
-        $tpl = $this->mustache->loadTemplate(
-            'test {{<partial}}{{$stuff}}override1{{/stuff}}{{/partial}} {{<partial}}{{$stuff}}override2{{/stuff}}{{/partial}}'
-        );
+                $tpl = $this->mustache->loadTemplate(
+                        '{{<include}}{{/include}}'
+                );
 
-        $data = array();
+                $data = [];
 
-        $this->assertEquals('test |override1 default| |override2 default|', $tpl->render($data));
-    }
+                $this->assertEquals('default content', $tpl->render($data));
+        }
 
-    public function testBlocksDoNotLeakBetweenPartials()
-    {
-        $partials = array(
-            'partial' => '|{{$a}}A{{/a}} {{$b}}B{{/b}}|',
-        );
 
-        $this->mustache->setPartials($partials);
+        public function testOverriddenContent()
+        {
+                $partials = [
+                        'super' => '...{{$title}}Default title{{/title}}...',
+                ];
 
-        $tpl = $this->mustache->loadTemplate(
-            'test {{<partial}}{{$a}}C{{/a}}{{/partial}} {{<partial}}{{$b}}D{{/b}}{{/partial}}'
-        );
+                $this->mustache->setPartials($partials);
 
-        $data = array();
+                $tpl = $this->mustache->loadTemplate(
+                        '{{<super}}{{$title}}sub template title{{/title}}{{/super}}'
+                );
 
-        $this->assertEquals('test |C B| |A D|', $tpl->render($data));
-    }
+                $data = [];
 
-    public function testDataDoesNotOverrideBlock()
-    {
-        $partials = array(
-            'include' => '{{$var}}var in include{{/var}}',
-        );
+                $this->assertEquals('...sub template title...', $tpl->render($data));
+        }
 
-        $this->mustache->setPartials($partials);
 
-        $tpl = $this->mustache->loadTemplate(
-            '{{<include}}{{$var}}var in template{{/var}}{{/include}}'
-        );
+        public function testOverriddenPartial()
+        {
+                $partials = [
+                        'partial' => '|{{$stuff}}...{{/stuff}}{{$default}} default{{/default}}|',
+                ];
 
-        $data = array(
-            'var' => 'var in data',
-        );
+                $this->mustache->setPartials($partials);
 
-        $this->assertEquals('var in template', $tpl->render($data));
-    }
+                $tpl = $this->mustache->loadTemplate(
+                        'test {{<partial}}{{$stuff}}override1{{/stuff}}{{/partial}} {{<partial}}{{$stuff}}override2{{/stuff}}{{/partial}}'
+                );
 
-    public function testDataDoesNotOverrideDefaultBlockValue()
-    {
-        $partials = array(
-            'include' => '{{$var}}var in include{{/var}}',
-        );
+                $data = [];
 
-        $this->mustache->setPartials($partials);
+                $this->assertEquals('test |override1 default| |override2 default|', $tpl->render($data));
+        }
 
-        $tpl = $this->mustache->loadTemplate(
-            '{{<include}}{{/include}}'
-        );
 
-        $data = array(
-            'var' => 'var in data',
-        );
+        public function testBlocksDoNotLeakBetweenPartials()
+        {
+                $partials = [
+                        'partial' => '|{{$a}}A{{/a}} {{$b}}B{{/b}}|',
+                ];
 
-        $this->assertEquals('var in include', $tpl->render($data));
-    }
+                $this->mustache->setPartials($partials);
 
-    public function testOverridePartialWithNewlines()
-    {
-        $partials = array(
-            'partial' => '{{$ballmer}}peaking{{/ballmer}}',
-        );
+                $tpl = $this->mustache->loadTemplate(
+                        'test {{<partial}}{{$a}}C{{/a}}{{/partial}} {{<partial}}{{$b}}D{{/b}}{{/partial}}'
+                );
 
-        $this->mustache->setPartials($partials);
+                $data = [];
 
-        $tpl = $this->mustache->loadTemplate(
-            "{{<partial}}{{\$ballmer}}\npeaked\n\n:(\n{{/ballmer}}{{/partial}}"
-        );
+                $this->assertEquals('test |C B| |A D|', $tpl->render($data));
+        }
 
-        $data = array();
 
-        $this->assertEquals("peaked\n\n:(\n", $tpl->render($data));
-    }
+        public function testDataDoesNotOverrideBlock()
+        {
+                $partials = [
+                        'include' => '{{$var}}var in include{{/var}}',
+                ];
 
-    public function testInheritIndentationWhenOverridingAPartial()
-    {
-        $partials = array(
-            'partial' => 'stop:
+                $this->mustache->setPartials($partials);
+
+                $tpl = $this->mustache->loadTemplate(
+                        '{{<include}}{{$var}}var in template{{/var}}{{/include}}'
+                );
+
+                $data = [
+                        'var' => 'var in data',
+                ];
+
+                $this->assertEquals('var in template', $tpl->render($data));
+        }
+
+
+        public function testDataDoesNotOverrideDefaultBlockValue()
+        {
+                $partials = [
+                        'include' => '{{$var}}var in include{{/var}}',
+                ];
+
+                $this->mustache->setPartials($partials);
+
+                $tpl = $this->mustache->loadTemplate(
+                        '{{<include}}{{/include}}'
+                );
+
+                $data = [
+                        'var' => 'var in data',
+                ];
+
+                $this->assertEquals('var in include', $tpl->render($data));
+        }
+
+
+        public function testOverridePartialWithNewlines()
+        {
+                $partials = [
+                        'partial' => '{{$ballmer}}peaking{{/ballmer}}',
+                ];
+
+                $this->mustache->setPartials($partials);
+
+                $tpl = $this->mustache->loadTemplate(
+                        "{{<partial}}{{\$ballmer}}\npeaked\n\n:(\n{{/ballmer}}{{/partial}}"
+                );
+
+                $data = [];
+
+                $this->assertEquals("peaked\n\n:(\n", $tpl->render($data));
+        }
+
+
+        public function testInheritIndentationWhenOverridingAPartial()
+        {
+                $partials = [
+                        'partial' => 'stop:
                     {{$nineties}}collaborate and listen{{/nineties}}',
-        );
+                ];
 
-        $this->mustache->setPartials($partials);
+                $this->mustache->setPartials($partials);
 
-        $tpl = $this->mustache->loadTemplate(
-            '{{<partial}}{{$nineties}}hammer time{{/nineties}}{{/partial}}'
-        );
+                $tpl = $this->mustache->loadTemplate(
+                        '{{<partial}}{{$nineties}}hammer time{{/nineties}}{{/partial}}'
+                );
 
-        $data = array();
+                $data = [];
 
-        $this->assertEquals(
-            'stop:
+                $this->assertEquals(
+                        'stop:
                     hammer time',
-            $tpl->render($data)
-        );
-    }
+                        $tpl->render($data)
+                );
+        }
 
-    public function testInheritSpacingWhenOverridingAPartial()
-    {
-        $partials = array(
-            'parent' => 'collaborate_and{{$id}}{{/id}}',
-            'child'  => '{{<parent}}{{$id}}_listen{{/id}}{{/parent}}',
-        );
 
-        $this->mustache->setPartials($partials);
+        public function testInheritSpacingWhenOverridingAPartial()
+        {
+                $partials = [
+                        'parent' => 'collaborate_and{{$id}}{{/id}}',
+                        'child'  => '{{<parent}}{{$id}}_listen{{/id}}{{/parent}}',
+                ];
 
-        $tpl = $this->mustache->loadTemplate(
-            'stop:
+                $this->mustache->setPartials($partials);
+
+                $tpl = $this->mustache->loadTemplate(
+                        'stop:
               {{>child}}'
-        );
+                );
 
-        $data = array();
+                $data = [];
 
-        $this->assertEquals(
-            'stop:
+                $this->assertEquals(
+                        'stop:
               collaborate_and_listen',
-            $tpl->render($data)
-        );
-    }
+                        $tpl->render($data)
+                );
+        }
 
-    public function testOverrideOneSubstitutionButNotTheOther()
-    {
-        $partials = array(
-            'partial' => '{{$stuff}}default one{{/stuff}}, {{$stuff2}}default two{{/stuff2}}',
-        );
 
-        $this->mustache->setPartials($partials);
+        public function testOverrideOneSubstitutionButNotTheOther()
+        {
+                $partials = [
+                        'partial' => '{{$stuff}}default one{{/stuff}}, {{$stuff2}}default two{{/stuff2}}',
+                ];
 
-        $tpl = $this->mustache->loadTemplate(
-            '{{<partial}}{{$stuff2}}override two{{/stuff2}}{{/partial}}'
-        );
+                $this->mustache->setPartials($partials);
 
-        $data = array();
+                $tpl = $this->mustache->loadTemplate(
+                        '{{<partial}}{{$stuff2}}override two{{/stuff2}}{{/partial}}'
+                );
 
-        $this->assertEquals('default one, override two', $tpl->render($data));
-    }
+                $data = [];
 
-    public function testSuperTemplatesWithNoParameters()
-    {
-        $partials = array(
-            'include' => '{{$foo}}default content{{/foo}}',
-        );
+                $this->assertEquals('default one, override two', $tpl->render($data));
+        }
 
-        $this->mustache->setPartials($partials);
 
-        $tpl = $this->mustache->loadTemplate(
-            '{{>include}}|{{<include}}{{/include}}'
-        );
+        public function testSuperTemplatesWithNoParameters()
+        {
+                $partials = [
+                        'include' => '{{$foo}}default content{{/foo}}',
+                ];
 
-        $data = array();
+                $this->mustache->setPartials($partials);
 
-        $this->assertEquals('default content|default content', $tpl->render($data));
-    }
+                $tpl = $this->mustache->loadTemplate(
+                        '{{>include}}|{{<include}}{{/include}}'
+                );
 
-    public function testRecursionInInheritedTemplates()
-    {
-        $partials = array(
-            'include'  => '{{$foo}}default content{{/foo}} {{$bar}}{{<include2}}{{/include2}}{{/bar}}',
-            'include2' => '{{$foo}}include2 default content{{/foo}} {{<include}}{{$bar}}don\'t recurse{{/bar}}{{/include}}',
-        );
+                $data = [];
 
-        $this->mustache->setPartials($partials);
+                $this->assertEquals('default content|default content', $tpl->render($data));
+        }
 
-        $tpl = $this->mustache->loadTemplate(
-            '{{<include}}{{$foo}}override{{/foo}}{{/include}}'
-        );
 
-        $data = array();
+        public function testRecursionInInheritedTemplates()
+        {
+                $partials = [
+                        'include'  => '{{$foo}}default content{{/foo}} {{$bar}}{{<include2}}{{/include2}}{{/bar}}',
+                        'include2' => '{{$foo}}include2 default content{{/foo}} {{<include}}{{$bar}}don\'t recurse{{/bar}}{{/include}}',
+                ];
 
-        $this->assertEquals('override override override don\'t recurse', $tpl->render($data));
-    }
+                $this->mustache->setPartials($partials);
 
-    public function testTopLevelSubstitutionsTakePrecedenceInMultilevelInheritance()
-    {
-        $partials = array(
-            'parent'      => '{{<older}}{{$a}}p{{/a}}{{/older}}',
-            'older'       => '{{<grandParent}}{{$a}}o{{/a}}{{/grandParent}}',
-            'grandParent' => '{{$a}}g{{/a}}',
-        );
+                $tpl = $this->mustache->loadTemplate(
+                        '{{<include}}{{$foo}}override{{/foo}}{{/include}}'
+                );
 
-        $this->mustache->setPartials($partials);
+                $data = [];
 
-        $tpl = $this->mustache->loadTemplate(
-            '{{<parent}}{{$a}}c{{/a}}{{/parent}}'
-        );
+                $this->assertEquals('override override override don\'t recurse', $tpl->render($data));
+        }
 
-        $data = array();
 
-        $this->assertEquals('c', $tpl->render($data));
-    }
+        public function testTopLevelSubstitutionsTakePrecedenceInMultilevelInheritance()
+        {
+                $partials = [
+                        'parent'      => '{{<older}}{{$a}}p{{/a}}{{/older}}',
+                        'older'       => '{{<grandParent}}{{$a}}o{{/a}}{{/grandParent}}',
+                        'grandParent' => '{{$a}}g{{/a}}',
+                ];
 
-    public function testMultiLevelInheritanceNoSubChild()
-    {
-        $partials = array(
-            'parent'      => '{{<older}}{{$a}}p{{/a}}{{/older}}',
-            'older'       => '{{<grandParent}}{{$a}}o{{/a}}{{/grandParent}}',
-            'grandParent' => '{{$a}}g{{/a}}',
-        );
+                $this->mustache->setPartials($partials);
 
-        $this->mustache->setPartials($partials);
+                $tpl = $this->mustache->loadTemplate(
+                        '{{<parent}}{{$a}}c{{/a}}{{/parent}}'
+                );
 
-        $tpl = $this->mustache->loadTemplate(
-            '{{<parent}}{{/parent}}'
-        );
+                $data = [];
 
-        $data = array();
+                $this->assertEquals('c', $tpl->render($data));
+        }
 
-        $this->assertEquals('p', $tpl->render($data));
-    }
 
-    public function testIgnoreTextInsideSuperTemplatesButParseArgs()
-    {
-        $partials = array(
-            'include' => '{{$foo}}default content{{/foo}}',
-         );
+        public function testMultiLevelInheritanceNoSubChild()
+        {
+                $partials = [
+                        'parent'      => '{{<older}}{{$a}}p{{/a}}{{/older}}',
+                        'older'       => '{{<grandParent}}{{$a}}o{{/a}}{{/grandParent}}',
+                        'grandParent' => '{{$a}}g{{/a}}',
+                ];
 
-        $this->mustache->setPartials($partials);
+                $this->mustache->setPartials($partials);
 
-        $tpl = $this->mustache->loadTemplate(
-            '{{<include}} asdfasd {{$foo}}hmm{{/foo}} asdfasdfasdf {{/include}}'
-        );
+                $tpl = $this->mustache->loadTemplate(
+                        '{{<parent}}{{/parent}}'
+                );
 
-        $data = array();
+                $data = [];
 
-        $this->assertEquals('hmm', $tpl->render($data));
-    }
+                $this->assertEquals('p', $tpl->render($data));
+        }
 
-    public function testIgnoreTextInsideSuperTemplates()
-    {
-        $partials = array(
-            'include' => '{{$foo}}default content{{/foo}}',
-         );
 
-        $this->mustache->setPartials($partials);
+        public function testIgnoreTextInsideSuperTemplatesButParseArgs()
+        {
+                $partials = [
+                        'include' => '{{$foo}}default content{{/foo}}',
+                ];
 
-        $tpl = $this->mustache->loadTemplate(
-            '{{<include}} asdfasd asdfasdfasdf {{/include}}'
-        );
+                $this->mustache->setPartials($partials);
 
-        $data = array();
+                $tpl = $this->mustache->loadTemplate(
+                        '{{<include}} asdfasd {{$foo}}hmm{{/foo}} asdfasdfasdf {{/include}}'
+                );
 
-        $this->assertEquals('default content', $tpl->render($data));
-    }
+                $data = [];
 
-    public function testInheritanceWithLazyEvaluation()
-    {
-        $partials = array(
-            'parent' => '{{#items}}{{$value}}ignored{{/value}}{{/items}}',
-        );
+                $this->assertEquals('hmm', $tpl->render($data));
+        }
 
-        $this->mustache->setPartials($partials);
 
-        $tpl = $this->mustache->loadTemplate(
-            '{{<parent}}{{$value}}<{{ . }}>{{/value}}{{/parent}}'
-        );
+        public function testIgnoreTextInsideSuperTemplates()
+        {
+                $partials = [
+                        'include' => '{{$foo}}default content{{/foo}}',
+                ];
 
-        $data = array('items' => array(1, 2, 3));
+                $this->mustache->setPartials($partials);
 
-        $this->assertEquals('<1><2><3>', $tpl->render($data));
-    }
+                $tpl = $this->mustache->loadTemplate(
+                        '{{<include}} asdfasd asdfasdfasdf {{/include}}'
+                );
 
-    public function testInheritanceWithLazyEvaluationWhitespaceIgnored()
-    {
-        $partials = array(
-            'parent' => '{{#items}}{{$value}}\n\nignored\n\n{{/value}}{{/items}}',
-        );
+                $data = [];
 
-        $this->mustache->setPartials($partials);
+                $this->assertEquals('default content', $tpl->render($data));
+        }
 
-        $tpl = $this->mustache->loadTemplate(
-            '{{<parent}}\n\n\n{{$value}}<{{ . }}>{{/value}}\n\n{{/parent}}'
-        );
 
-        $data = array('items' => array(1, 2, 3));
+        public function testInheritanceWithLazyEvaluation()
+        {
+                $partials = [
+                        'parent' => '{{#items}}{{$value}}ignored{{/value}}{{/items}}',
+                ];
 
-        $this->assertEquals('<1><2><3>', $tpl->render($data));
-    }
+                $this->mustache->setPartials($partials);
 
-    public function testInheritanceWithLazyEvaluationAndSections()
-    {
-        $partials = array(
-            'parent' => '{{#items}}{{$value}}\n\nignored {{.}} {{#more}} there is more {{/more}}\n\n{{/value}}{{/items}}',
-        );
+                $tpl = $this->mustache->loadTemplate(
+                        '{{<parent}}{{$value}}<{{ . }}>{{/value}}{{/parent}}'
+                );
 
-        $this->mustache->setPartials($partials);
+                $data = ['items' => [1, 2, 3]];
 
-        $tpl = $this->mustache->loadTemplate(
-            '{{<parent}}\n\n\n{{$value}}<{{ . }}>{{#more}} there is less {{/more}}{{/value}}\n\n{{/parent}}'
-        );
+                $this->assertEquals('<1><2><3>', $tpl->render($data));
+        }
 
-        $data = array('items' => array(1, 2, 3), 'more' => 'stuff');
 
-        $this->assertEquals('<1> there is less <2> there is less <3> there is less ', $tpl->render($data));
-    }
+        public function testInheritanceWithLazyEvaluationWhitespaceIgnored()
+        {
+                $partials = [
+                        'parent' => '{{#items}}{{$value}}\n\nignored\n\n{{/value}}{{/items}}',
+                ];
 
-    /**
-     * @dataProvider getIllegalInheritanceExamples
-     * @expectedException Mustache_Exception_SyntaxException
-     * @expectedExceptionMessage Illegal content in < parent tag
-     */
-    public function testIllegalInheritanceExamples($partials, $data, $template)
-    {
-        $this->mustache->setPartials($partials);
-        $tpl = $this->mustache->loadTemplate($template);
-        $tpl->render($data);
-    }
+                $this->mustache->setPartials($partials);
 
-    /**
-     * @dataProvider getLegalInheritanceExamples
-     */
-    public function testLegalInheritanceExamples($partials, $data, $template, $expect)
-    {
-        $this->mustache->setPartials($partials);
-        $tpl = $this->mustache->loadTemplate($template);
-        $this->assertSame($expect, $tpl->render($data));
-    }
+                $tpl = $this->mustache->loadTemplate(
+                        '{{<parent}}\n\n\n{{$value}}<{{ . }}>{{/value}}\n\n{{/parent}}'
+                );
+
+                $data = ['items' => [1, 2, 3]];
+
+                $this->assertEquals('<1><2><3>', $tpl->render($data));
+        }
+
+
+        public function testInheritanceWithLazyEvaluationAndSections()
+        {
+                $partials = [
+                        'parent' => '{{#items}}{{$value}}\n\nignored {{.}} {{#more}} there is more {{/more}}\n\n{{/value}}{{/items}}',
+                ];
+
+                $this->mustache->setPartials($partials);
+
+                $tpl = $this->mustache->loadTemplate(
+                        '{{<parent}}\n\n\n{{$value}}<{{ . }}>{{#more}} there is less {{/more}}{{/value}}\n\n{{/parent}}'
+                );
+
+                $data = ['items' => [1, 2, 3], 'more' => 'stuff'];
+
+                $this->assertEquals('<1> there is less <2> there is less <3> there is less ', $tpl->render($data));
+        }
+
+
+        /**
+         * @dataProvider             getIllegalInheritanceExamples
+         * @expectedException \Mustache\Exception\SyntaxException
+         * @expectedExceptionMessage Illegal content in < parent tag
+         */
+        public function testIllegalInheritanceExamples($partials, $data, $template)
+        {
+                $this->mustache->setPartials($partials);
+                $tpl = $this->mustache->loadTemplate($template);
+                $tpl->render($data);
+        }
+
+
+        /**
+         * @dataProvider getLegalInheritanceExamples
+         */
+        public function testLegalInheritanceExamples($partials, $data, $template, $expect)
+        {
+                $this->mustache->setPartials($partials);
+                $tpl = $this->mustache->loadTemplate($template);
+                $this->assertSame($expect, $tpl->render($data));
+        }
 }

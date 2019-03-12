@@ -11,34 +11,36 @@
 
 class Mustache_Test_Cache_AbstractCacheTest extends PHPUnit_Framework_TestCase
 {
-    public function testGetSetLogger()
-    {
-        $cache  = new CacheStub();
-        $logger = new Mustache_Logger_StreamLogger('php://stdout');
-        $cache->setLogger($logger);
-        $this->assertSame($logger, $cache->getLogger());
-    }
+        public function testGetSetLogger()
+        {
+                $cache = new CacheStub();
+                $logger = new \Mustache\Logger\StreamLogger('php://stdout');
+                $cache->setLogger($logger);
+                $this->assertSame($logger, $cache->getLogger());
+        }
 
-    /**
-     * @expectedException Mustache_Exception_InvalidArgumentException
-     */
-    public function testSetLoggerThrowsExceptions()
-    {
-        $cache  = new CacheStub();
-        $logger = new StdClass();
-        $cache->setLogger($logger);
-    }
+
+        /**
+         * @expectedException InvalidArgumentException
+         */
+        public function testSetLoggerThrowsExceptions()
+        {
+                $cache = new CacheStub();
+                $logger = new StdClass();
+                $cache->setLogger($logger);
+        }
 }
 
-class CacheStub extends Mustache_Cache_AbstractCache
+class CacheStub extends \Mustache\Cache\AbstractCache
 {
-    public function load($key)
-    {
-        // nada
-    }
+        public function load($key)
+        {
+                // nada
+        }
 
-    public function cache($key, $value)
-    {
-        // nada
-    }
+
+        public function cache($key, $value)
+        {
+                // nada
+        }
 }

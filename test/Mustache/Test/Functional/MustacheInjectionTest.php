@@ -15,69 +15,74 @@
  */
 class Mustache_Test_Functional_MustacheInjectionTest extends PHPUnit_Framework_TestCase
 {
-    private $mustache;
+        private $mustache;
 
-    public function setUp()
-    {
-        $this->mustache = new Mustache_Engine();
-    }
 
-    /**
-     * @dataProvider injectionData
-     */
-    public function testInjection($tpl, $data, $partials, $expect)
-    {
-        $this->mustache->setPartials($partials);
-        $this->assertEquals($expect, $this->mustache->render($tpl, $data));
-    }
+        public function setUp()
+        {
+                $this->mustache = new \Mustache\Engine();
+        }
 
-    public function injectionData()
-    {
-        $interpolationData = array(
-            'a' => '{{ b }}',
-            'b' => 'FAIL',
-        );
 
-        $sectionData = array(
-            'a' => true,
-            'b' => '{{ c }}',
-            'c' => 'FAIL',
-        );
+        /**
+         * @dataProvider injectionData
+         */
+        public function testInjection($tpl, $data, $partials, $expect)
+        {
+                $this->mustache->setPartials($partials);
+                $this->assertEquals($expect, $this->mustache->render($tpl, $data));
+        }
 
-        $lambdaInterpolationData = array(
-            'a' => array($this, 'lambdaInterpolationCallback'),
-            'b' => '{{ c }}',
-            'c' => 'FAIL',
-        );
 
-        $lambdaSectionData = array(
-            'a' => array($this, 'lambdaSectionCallback'),
-            'b' => '{{ c }}',
-            'c' => 'FAIL',
-        );
+        public function injectionData()
+        {
+                $interpolationData = [
+                        'a' => '{{ b }}',
+                        'b' => 'FAIL',
+                ];
 
-        return array(
-            array('{{ a }}',   $interpolationData, array(), '{{ b }}'),
-            array('{{{ a }}}', $interpolationData, array(), '{{ b }}'),
+                $sectionData = [
+                        'a' => true,
+                        'b' => '{{ c }}',
+                        'c' => 'FAIL',
+                ];
 
-            array('{{# a }}{{ b }}{{/ a }}',   $sectionData, array(), '{{ c }}'),
-            array('{{# a }}{{{ b }}}{{/ a }}', $sectionData, array(), '{{ c }}'),
+                $lambdaInterpolationData = [
+                        'a' => [$this, 'lambdaInterpolationCallback'],
+                        'b' => '{{ c }}',
+                        'c' => 'FAIL',
+                ];
 
-            array('{{> partial }}', $interpolationData, array('partial' => '{{ a }}'),   '{{ b }}'),
-            array('{{> partial }}', $interpolationData, array('partial' => '{{{ a }}}'), '{{ b }}'),
+                $lambdaSectionData = [
+                        'a' => [$this, 'lambdaSectionCallback'],
+                        'b' => '{{ c }}',
+                        'c' => 'FAIL',
+                ];
 
-            array('{{ a }}',           $lambdaInterpolationData, array(), '{{ c }}'),
-            array('{{# a }}b{{/ a }}', $lambdaSectionData,       array(), '{{ c }}'),
-        );
-    }
+                return [
+                        ['{{ a }}', $interpolationData, [], '{{ b }}'],
+                        ['{{{ a }}}', $interpolationData, [], '{{ b }}'],
 
-    public static function lambdaInterpolationCallback()
-    {
-        return '{{ b }}';
-    }
+                        ['{{# a }}{{ b }}{{/ a }}', $sectionData, [], '{{ c }}'],
+                        ['{{# a }}{{{ b }}}{{/ a }}', $sectionData, [], '{{ c }}'],
 
-    public static function lambdaSectionCallback($text)
-    {
-        return '{{ ' . $text . ' }}';
-    }
+                        ['{{> partial }}', $interpolationData, ['partial' => '{{ a }}'], '{{ b }}'],
+                        ['{{> partial }}', $interpolationData, ['partial' => '{{{ a }}}'], '{{ b }}'],
+
+                        ['{{ a }}', $lambdaInterpolationData, [], '{{ c }}'],
+                        ['{{# a }}b{{/ a }}', $lambdaSectionData, [], '{{ c }}'],
+                ];
+        }
+
+
+        public static function lambdaInterpolationCallback()
+        {
+                return '{{ b }}';
+        }
+
+
+        public static function lambdaSectionCallback($text)
+        {
+                return '{{ ' . $text . ' }}';
+        }
 }

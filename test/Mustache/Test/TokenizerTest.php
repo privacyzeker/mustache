@@ -14,293 +14,296 @@
  */
 class Mustache_Test_TokenizerTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * @dataProvider getTokens
-     */
-    public function testScan($text, $delimiters, $expected)
-    {
-        $tokenizer = new Mustache_Tokenizer();
-        $this->assertSame($expected, $tokenizer->scan($text, $delimiters));
-    }
+        /**
+         * @dataProvider getTokens
+         */
+        public function testScan($text, $delimiters, $expected)
+        {
+                $tokenizer = new \Mustache\Tokenizer();
+                $this->assertSame($expected, $tokenizer->scan($text, $delimiters));
+        }
 
-    /**
-     * @expectedException Mustache_Exception_SyntaxException
-     */
-    public function testUnevenBracesThrowExceptions()
-    {
-        $tokenizer = new Mustache_Tokenizer();
 
-        $text = '{{{ name }}';
-        $tokenizer->scan($text, null);
-    }
+        /**
+         * @expectedException \Mustache\Exception\SyntaxException
+         */
+        public function testUnevenBracesThrowExceptions()
+        {
+                $tokenizer = new \Mustache\Tokenizer();
 
-    /**
-     * @expectedException Mustache_Exception_SyntaxException
-     */
-    public function testUnevenBracesWithCustomDelimiterThrowExceptions()
-    {
-        $tokenizer = new Mustache_Tokenizer();
+                $text = '{{{ name }}';
+                $tokenizer->scan($text, null);
+        }
 
-        $text = '<%{ name %>';
-        $tokenizer->scan($text, '<% %>');
-    }
 
-    public function getTokens()
-    {
-        return array(
-            array(
-                'text',
-                null,
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::VALUE => 'text',
-                    ),
-                ),
-            ),
+        /**
+         * @expectedException \Mustache\Exception\SyntaxException
+         */
+        public function testUnevenBracesWithCustomDelimiterThrowExceptions()
+        {
+                $tokenizer = new \Mustache\Tokenizer();
 
-            array(
-                'text',
-                '<<< >>>',
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::VALUE => 'text',
-                    ),
-                ),
-            ),
+                $text = '<%{ name %>';
+                $tokenizer->scan($text, '<% %>');
+        }
 
-            array(
-                '{{ name }}',
-                null,
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_ESCAPED,
-                        Mustache_Tokenizer::NAME  => 'name',
-                        Mustache_Tokenizer::OTAG  => '{{',
-                        Mustache_Tokenizer::CTAG  => '}}',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 10,
-                    ),
-                ),
-            ),
 
-            array(
-                '{{ name }}',
-                '<<< >>>',
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::VALUE => '{{ name }}',
-                    ),
-                ),
-            ),
+        public function getTokens()
+        {
+                return [
+                        [
+                                'text',
+                                null,
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => 'text',
+                                        ],
+                                ],
+                        ],
 
-            array(
-                '<<< name >>>',
-                '<<< >>>',
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_ESCAPED,
-                        Mustache_Tokenizer::NAME  => 'name',
-                        Mustache_Tokenizer::OTAG  => '<<<',
-                        Mustache_Tokenizer::CTAG  => '>>>',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 12,
-                    ),
-                ),
-            ),
+                        [
+                                'text',
+                                '<<< >>>',
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => 'text',
+                                        ],
+                                ],
+                        ],
 
-            array(
-                "{{{ a }}}\n{{# b }}  \n{{= | | =}}| c ||/ b |\n|{ d }|",
-                null,
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_UNESCAPED,
-                        Mustache_Tokenizer::NAME  => 'a',
-                        Mustache_Tokenizer::OTAG  => '{{',
-                        Mustache_Tokenizer::CTAG  => '}}',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 8,
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::VALUE => "\n",
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_SECTION,
-                        Mustache_Tokenizer::NAME  => 'b',
-                        Mustache_Tokenizer::OTAG  => '{{',
-                        Mustache_Tokenizer::CTAG  => '}}',
-                        Mustache_Tokenizer::LINE  => 1,
-                        Mustache_Tokenizer::INDEX => 18,
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 1,
-                        Mustache_Tokenizer::VALUE => "  \n",
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_DELIM_CHANGE,
-                        Mustache_Tokenizer::LINE  => 2,
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_ESCAPED,
-                        Mustache_Tokenizer::NAME  => 'c',
-                        Mustache_Tokenizer::OTAG  => '|',
-                        Mustache_Tokenizer::CTAG  => '|',
-                        Mustache_Tokenizer::LINE  => 2,
-                        Mustache_Tokenizer::INDEX => 37,
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_END_SECTION,
-                        Mustache_Tokenizer::NAME  => 'b',
-                        Mustache_Tokenizer::OTAG  => '|',
-                        Mustache_Tokenizer::CTAG  => '|',
-                        Mustache_Tokenizer::LINE  => 2,
-                        Mustache_Tokenizer::INDEX => 37,
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 2,
-                        Mustache_Tokenizer::VALUE => "\n",
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_UNESCAPED,
-                        Mustache_Tokenizer::NAME  => 'd',
-                        Mustache_Tokenizer::OTAG  => '|',
-                        Mustache_Tokenizer::CTAG  => '|',
-                        Mustache_Tokenizer::LINE  => 3,
-                        Mustache_Tokenizer::INDEX => 51,
-                    ),
+                        [
+                                '{{ name }}',
+                                null,
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_ESCAPED,
+                                                \Mustache\Tokenizer::NAME  => 'name',
+                                                \Mustache\Tokenizer::OTAG  => '{{',
+                                                \Mustache\Tokenizer::CTAG  => '}}',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 10,
+                                        ],
+                                ],
+                        ],
 
-                ),
-            ),
+                        [
+                                '{{ name }}',
+                                '<<< >>>',
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => '{{ name }}',
+                                        ],
+                                ],
+                        ],
 
-            // See https://github.com/bobthecow/mustache.php/issues/183
-            array(
-                '{{# a }}0{{/ a }}',
-                null,
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_SECTION,
-                        Mustache_Tokenizer::NAME  => 'a',
-                        Mustache_Tokenizer::OTAG  => '{{',
-                        Mustache_Tokenizer::CTAG  => '}}',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 8,
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::VALUE => '0',
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_END_SECTION,
-                        Mustache_Tokenizer::NAME  => 'a',
-                        Mustache_Tokenizer::OTAG  => '{{',
-                        Mustache_Tokenizer::CTAG  => '}}',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 9,
-                    ),
-                ),
-            ),
+                        [
+                                '<<< name >>>',
+                                '<<< >>>',
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_ESCAPED,
+                                                \Mustache\Tokenizer::NAME  => 'name',
+                                                \Mustache\Tokenizer::OTAG  => '<<<',
+                                                \Mustache\Tokenizer::CTAG  => '>>>',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 12,
+                                        ],
+                                ],
+                        ],
 
-            // custom delimiters don't swallow the next character, even if it is a }, }}}, or the same delimiter
-            array(
-                '<% a %>} <% b %>%> <% c %>}}}',
-                '<% %>',
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_ESCAPED,
-                        Mustache_Tokenizer::NAME  => 'a',
-                        Mustache_Tokenizer::OTAG  => '<%',
-                        Mustache_Tokenizer::CTAG  => '%>',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 7,
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::VALUE => '} ',
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_ESCAPED,
-                        Mustache_Tokenizer::NAME  => 'b',
-                        Mustache_Tokenizer::OTAG  => '<%',
-                        Mustache_Tokenizer::CTAG  => '%>',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 16,
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::VALUE => '%> ',
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_ESCAPED,
-                        Mustache_Tokenizer::NAME  => 'c',
-                        Mustache_Tokenizer::OTAG  => '<%',
-                        Mustache_Tokenizer::CTAG  => '%>',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 26,
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::VALUE => '}}}',
-                    ),
-                ),
-            ),
+                        [
+                                "{{{ a }}}\n{{# b }}  \n{{= | | =}}| c ||/ b |\n|{ d }|",
+                                null,
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_UNESCAPED,
+                                                \Mustache\Tokenizer::NAME  => 'a',
+                                                \Mustache\Tokenizer::OTAG  => '{{',
+                                                \Mustache\Tokenizer::CTAG  => '}}',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 8,
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => "\n",
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_SECTION,
+                                                \Mustache\Tokenizer::NAME  => 'b',
+                                                \Mustache\Tokenizer::OTAG  => '{{',
+                                                \Mustache\Tokenizer::CTAG  => '}}',
+                                                \Mustache\Tokenizer::LINE  => 1,
+                                                \Mustache\Tokenizer::INDEX => 18,
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 1,
+                                                \Mustache\Tokenizer::VALUE => "  \n",
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE => \Mustache\Tokenizer::T_DELIM_CHANGE,
+                                                \Mustache\Tokenizer::LINE => 2,
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_ESCAPED,
+                                                \Mustache\Tokenizer::NAME  => 'c',
+                                                \Mustache\Tokenizer::OTAG  => '|',
+                                                \Mustache\Tokenizer::CTAG  => '|',
+                                                \Mustache\Tokenizer::LINE  => 2,
+                                                \Mustache\Tokenizer::INDEX => 37,
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_END_SECTION,
+                                                \Mustache\Tokenizer::NAME  => 'b',
+                                                \Mustache\Tokenizer::OTAG  => '|',
+                                                \Mustache\Tokenizer::CTAG  => '|',
+                                                \Mustache\Tokenizer::LINE  => 2,
+                                                \Mustache\Tokenizer::INDEX => 37,
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 2,
+                                                \Mustache\Tokenizer::VALUE => "\n",
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_UNESCAPED,
+                                                \Mustache\Tokenizer::NAME  => 'd',
+                                                \Mustache\Tokenizer::OTAG  => '|',
+                                                \Mustache\Tokenizer::CTAG  => '|',
+                                                \Mustache\Tokenizer::LINE  => 3,
+                                                \Mustache\Tokenizer::INDEX => 51,
+                                        ],
 
-            // unescaped custom delimiters are properly parsed
-            array(
-                '<%{ a }%>',
-                '<% %>',
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_UNESCAPED,
-                        Mustache_Tokenizer::NAME  => 'a',
-                        Mustache_Tokenizer::OTAG  => '<%',
-                        Mustache_Tokenizer::CTAG  => '%>',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 9,
-                    ),
-                ),
-            ),
+                                ],
+                        ],
 
-            // Ensure that $arg token is not picked up during tokenization
-            array(
-                '{{$arg}}default{{/arg}}',
-                null,
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_BLOCK_VAR,
-                        Mustache_Tokenizer::NAME  => 'arg',
-                        Mustache_Tokenizer::OTAG  => '{{',
-                        Mustache_Tokenizer::CTAG  => '}}',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 8,
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::VALUE => 'default',
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_END_SECTION,
-                        Mustache_Tokenizer::NAME  => 'arg',
-                        Mustache_Tokenizer::OTAG  => '{{',
-                        Mustache_Tokenizer::CTAG  => '}}',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 15,
-                    ),
-                ),
-            ),
-        );
-    }
+                        // See https://github.com/bobthecow/mustache.php/issues/183
+                        [
+                                '{{# a }}0{{/ a }}',
+                                null,
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_SECTION,
+                                                \Mustache\Tokenizer::NAME  => 'a',
+                                                \Mustache\Tokenizer::OTAG  => '{{',
+                                                \Mustache\Tokenizer::CTAG  => '}}',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 8,
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => '0',
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_END_SECTION,
+                                                \Mustache\Tokenizer::NAME  => 'a',
+                                                \Mustache\Tokenizer::OTAG  => '{{',
+                                                \Mustache\Tokenizer::CTAG  => '}}',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 9,
+                                        ],
+                                ],
+                        ],
+
+                        // custom delimiters don't swallow the next character, even if it is a }, }}}, or the same delimiter
+                        [
+                                '<% a %>} <% b %>%> <% c %>}}}',
+                                '<% %>',
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_ESCAPED,
+                                                \Mustache\Tokenizer::NAME  => 'a',
+                                                \Mustache\Tokenizer::OTAG  => '<%',
+                                                \Mustache\Tokenizer::CTAG  => '%>',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 7,
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => '} ',
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_ESCAPED,
+                                                \Mustache\Tokenizer::NAME  => 'b',
+                                                \Mustache\Tokenizer::OTAG  => '<%',
+                                                \Mustache\Tokenizer::CTAG  => '%>',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 16,
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => '%> ',
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_ESCAPED,
+                                                \Mustache\Tokenizer::NAME  => 'c',
+                                                \Mustache\Tokenizer::OTAG  => '<%',
+                                                \Mustache\Tokenizer::CTAG  => '%>',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 26,
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => '}}}',
+                                        ],
+                                ],
+                        ],
+
+                        // unescaped custom delimiters are properly parsed
+                        [
+                                '<%{ a }%>',
+                                '<% %>',
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_UNESCAPED,
+                                                \Mustache\Tokenizer::NAME  => 'a',
+                                                \Mustache\Tokenizer::OTAG  => '<%',
+                                                \Mustache\Tokenizer::CTAG  => '%>',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 9,
+                                        ],
+                                ],
+                        ],
+
+                        // Ensure that $arg token is not picked up during tokenization
+                        [
+                                '{{$arg}}default{{/arg}}',
+                                null,
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_BLOCK_VAR,
+                                                \Mustache\Tokenizer::NAME  => 'arg',
+                                                \Mustache\Tokenizer::OTAG  => '{{',
+                                                \Mustache\Tokenizer::CTAG  => '}}',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 8,
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => 'default',
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_END_SECTION,
+                                                \Mustache\Tokenizer::NAME  => 'arg',
+                                                \Mustache\Tokenizer::OTAG  => '{{',
+                                                \Mustache\Tokenizer::CTAG  => '}}',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 15,
+                                        ],
+                                ],
+                        ],
+                ];
+        }
 }

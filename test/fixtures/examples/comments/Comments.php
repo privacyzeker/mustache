@@ -11,8 +11,8 @@
 
 class Comments
 {
-    public function title()
-    {
-        return 'A Comedy of Errors';
-    }
+        public function title()
+        {
+                return 'A Comedy of Errors';
+        }
 }

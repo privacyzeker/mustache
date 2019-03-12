@@ -15,53 +15,57 @@
  */
 class Mustache_Test_FiveThree_Functional_LambdaHelperTest extends PHPUnit_Framework_TestCase
 {
-    private $mustache;
+        private $mustache;
 
-    public function setUp()
-    {
-        $this->mustache = new Mustache_Engine();
-    }
 
-    public function testSectionLambdaHelper()
-    {
-        $one = $this->mustache->loadTemplate('{{name}}');
-        $two = $this->mustache->loadTemplate('{{#lambda}}{{name}}{{/lambda}}');
+        public function setUp()
+        {
+                $this->mustache = new \Mustache\Engine();
+        }
 
-        $foo = new StdClass();
-        $foo->name = 'Mario';
-        $foo->lambda = function ($text, $mustache) {
-            return strtoupper($mustache->render($text));
-        };
 
-        $this->assertEquals('Mario', $one->render($foo));
-        $this->assertEquals('MARIO', $two->render($foo));
-    }
+        public function testSectionLambdaHelper()
+        {
+                $one = $this->mustache->loadTemplate('{{name}}');
+                $two = $this->mustache->loadTemplate('{{#lambda}}{{name}}{{/lambda}}');
 
-    public function testSectionLambdaHelperRespectsDelimiterChanges()
-    {
-        $tpl = $this->mustache->loadTemplate("{{=<% %>=}}\n<%# bang %><% value %><%/ bang %>");
+                $foo = new StdClass();
+                $foo->name = 'Mario';
+                $foo->lambda = function ($text, $mustache) {
+                        return strtoupper($mustache->render($text));
+                };
 
-        $data = new StdClass();
-        $data->value = 'hello world';
-        $data->bang = function ($text, $mustache) {
-            return $mustache->render($text) . '!';
-        };
+                $this->assertEquals('Mario', $one->render($foo));
+                $this->assertEquals('MARIO', $two->render($foo));
+        }
 
-        $this->assertEquals('hello world!', $tpl->render($data));
-    }
 
-    public function testLambdaHelperIsInvokable()
-    {
-        $one = $this->mustache->loadTemplate('{{name}}');
-        $two = $this->mustache->loadTemplate('{{#lambda}}{{name}}{{/lambda}}');
+        public function testSectionLambdaHelperRespectsDelimiterChanges()
+        {
+                $tpl = $this->mustache->loadTemplate("{{=<% %>=}}\n<%# bang %><% value %><%/ bang %>");
 
-        $foo = new StdClass();
-        $foo->name = 'Mario';
-        $foo->lambda = function ($text, $render) {
-            return strtoupper($render($text));
-        };
+                $data = new StdClass();
+                $data->value = 'hello world';
+                $data->bang = function ($text, $mustache) {
+                        return $mustache->render($text) . '!';
+                };
 
-        $this->assertEquals('Mario', $one->render($foo));
-        $this->assertEquals('MARIO', $two->render($foo));
-    }
+                $this->assertEquals('hello world!', $tpl->render($data));
+        }
+
+
+        public function testLambdaHelperIsInvokable()
+        {
+                $one = $this->mustache->loadTemplate('{{name}}');
+                $two = $this->mustache->loadTemplate('{{#lambda}}{{name}}{{/lambda}}');
+
+                $foo = new StdClass();
+                $foo->name = 'Mario';
+                $foo->lambda = function ($text, $render) {
+                        return strtoupper($render($text));
+                };
+
+                $this->assertEquals('Mario', $one->render($foo));
+                $this->assertEquals('MARIO', $two->render($foo));
+        }
 }

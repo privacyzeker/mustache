@@ -11,5 +11,5 @@
 
 class Unescaped
 {
-    public $title = 'Bear > Shark';
+        public $title = 'Bear > Shark';
 }

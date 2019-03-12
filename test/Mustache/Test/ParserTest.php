@@ -14,412 +14,440 @@
  */
 class Mustache_Test_ParserTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * @dataProvider getTokenSets
-     */
-    public function testParse($tokens, $expected)
-    {
-        $parser = new Mustache_Parser();
-        $this->assertEquals($expected, $parser->parse($tokens));
-    }
+        /**
+         * @dataProvider getTokenSets
+         */
+        public function testParse($tokens, $expected)
+        {
+                $parser = new \Mustache\Parser();
+                $this->assertEquals($expected, $parser->parse($tokens));
+        }
 
-    public function getTokenSets()
-    {
-        return array(
-            array(
-                array(),
-                array(),
-            ),
 
-            array(
-                array(array(
-                    Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                    Mustache_Tokenizer::LINE  => 0,
-                    Mustache_Tokenizer::VALUE => 'text',
-                )),
-                array(array(
-                    Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                    Mustache_Tokenizer::LINE  => 0,
-                    Mustache_Tokenizer::VALUE => 'text',
-                )),
-            ),
+        /**
+         * @return array
+         * @author <ted@privacyzeker.nl>
+         */
+        public function getTokenSets()
+        {
+                return [
+                        [
+                                [],
+                                [],
+                        ],
 
-            array(
-                array(array(
-                    Mustache_Tokenizer::TYPE => Mustache_Tokenizer::T_ESCAPED,
-                    Mustache_Tokenizer::LINE => 0,
-                    Mustache_Tokenizer::NAME => 'name',
-                )),
-                array(array(
-                    Mustache_Tokenizer::TYPE => Mustache_Tokenizer::T_ESCAPED,
-                    Mustache_Tokenizer::LINE => 0,
-                    Mustache_Tokenizer::NAME => 'name',
-                )),
-            ),
+                        [
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => 'text',
+                                        ],
+                                ],
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => 'text',
+                                        ],
+                                ],
+                        ],
 
-            array(
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::VALUE => 'foo',
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_INVERTED,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 123,
-                        Mustache_Tokenizer::NAME  => 'parent',
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_ESCAPED,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::NAME  => 'name',
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_END_SECTION,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 456,
-                        Mustache_Tokenizer::NAME  => 'parent',
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::VALUE => 'bar',
-                    ),
-                ),
+                        [
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE => \Mustache\Tokenizer::T_ESCAPED,
+                                                \Mustache\Tokenizer::LINE => 0,
+                                                \Mustache\Tokenizer::NAME => 'name',
+                                        ],
+                                ],
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE => \Mustache\Tokenizer::T_ESCAPED,
+                                                \Mustache\Tokenizer::LINE => 0,
+                                                \Mustache\Tokenizer::NAME => 'name',
+                                        ],
+                                ],
+                        ],
 
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::VALUE => 'foo',
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_INVERTED,
-                        Mustache_Tokenizer::NAME  => 'parent',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 123,
-                        Mustache_Tokenizer::END   => 456,
-                        Mustache_Tokenizer::NODES => array(
-                            array(
-                                Mustache_Tokenizer::TYPE => Mustache_Tokenizer::T_ESCAPED,
-                                Mustache_Tokenizer::LINE => 0,
-                                Mustache_Tokenizer::NAME => 'name',
-                            ),
-                        ),
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::VALUE => 'bar',
-                    ),
-                ),
-            ),
+                        [
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => 'foo',
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_INVERTED,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 123,
+                                                \Mustache\Tokenizer::NAME  => 'parent',
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE => \Mustache\Tokenizer::T_ESCAPED,
+                                                \Mustache\Tokenizer::LINE => 0,
+                                                \Mustache\Tokenizer::NAME => 'name',
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_END_SECTION,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 456,
+                                                \Mustache\Tokenizer::NAME  => 'parent',
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => 'bar',
+                                        ],
+                                ],
 
-            // This *would* be an invalid inheritance parse tree, but that pragma
-            // isn't enabled so it'll thunk it back into an "escaped" token:
-            array(
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE => Mustache_Tokenizer::T_BLOCK_VAR,
-                        Mustache_Tokenizer::NAME => 'foo',
-                        Mustache_Tokenizer::OTAG => '{{',
-                        Mustache_Tokenizer::CTAG => '}}',
-                        Mustache_Tokenizer::LINE => 0,
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::VALUE => 'bar',
-                    ),
-                ),
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE => Mustache_Tokenizer::T_ESCAPED,
-                        Mustache_Tokenizer::NAME => '$foo',
-                        Mustache_Tokenizer::OTAG => '{{',
-                        Mustache_Tokenizer::CTAG => '}}',
-                        Mustache_Tokenizer::LINE => 0,
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::VALUE => 'bar',
-                    ),
-                ),
-            ),
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => 'foo',
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_INVERTED,
+                                                \Mustache\Tokenizer::NAME  => 'parent',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 123,
+                                                \Mustache\Tokenizer::END   => 456,
+                                                \Mustache\Tokenizer::NODES => [
+                                                        [
+                                                                \Mustache\Tokenizer::TYPE => \Mustache\Tokenizer::T_ESCAPED,
+                                                                \Mustache\Tokenizer::LINE => 0,
+                                                                \Mustache\Tokenizer::NAME => 'name',
+                                                        ],
+                                                ],
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => 'bar',
+                                        ],
+                                ],
+                        ],
 
-            array(
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::VALUE => '  ',
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE => Mustache_Tokenizer::T_DELIM_CHANGE,
-                        Mustache_Tokenizer::LINE => 0,
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::VALUE => "  \n",
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE => Mustache_Tokenizer::T_ESCAPED,
-                        Mustache_Tokenizer::NAME => 'foo',
-                        Mustache_Tokenizer::OTAG => '[[',
-                        Mustache_Tokenizer::CTAG => ']]',
-                        Mustache_Tokenizer::LINE => 1,
-                    ),
-                ),
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE => Mustache_Tokenizer::T_ESCAPED,
-                        Mustache_Tokenizer::NAME => 'foo',
-                        Mustache_Tokenizer::OTAG => '[[',
-                        Mustache_Tokenizer::CTAG => ']]',
-                        Mustache_Tokenizer::LINE => 1,
-                    ),
-                ),
-            ),
+                        // This *would* be an invalid inheritance parse tree, but that pragma
+                        // isn't enabled so it'll thunk it back into an "escaped" token:
+                        [
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE => \Mustache\Tokenizer::T_BLOCK_VAR,
+                                                \Mustache\Tokenizer::NAME => 'foo',
+                                                \Mustache\Tokenizer::OTAG => '{{',
+                                                \Mustache\Tokenizer::CTAG => '}}',
+                                                \Mustache\Tokenizer::LINE => 0,
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => 'bar',
+                                        ],
+                                ],
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE => \Mustache\Tokenizer::T_ESCAPED,
+                                                \Mustache\Tokenizer::NAME => '$foo',
+                                                \Mustache\Tokenizer::OTAG => '{{',
+                                                \Mustache\Tokenizer::CTAG => '}}',
+                                                \Mustache\Tokenizer::LINE => 0,
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => 'bar',
+                                        ],
+                                ],
+                        ],
 
-        );
-    }
+                        [
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => '  ',
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE => \Mustache\Tokenizer::T_DELIM_CHANGE,
+                                                \Mustache\Tokenizer::LINE => 0,
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => "  \n",
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE => \Mustache\Tokenizer::T_ESCAPED,
+                                                \Mustache\Tokenizer::NAME => 'foo',
+                                                \Mustache\Tokenizer::OTAG => '[[',
+                                                \Mustache\Tokenizer::CTAG => ']]',
+                                                \Mustache\Tokenizer::LINE => 1,
+                                        ],
+                                ],
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE => \Mustache\Tokenizer::T_ESCAPED,
+                                                \Mustache\Tokenizer::NAME => 'foo',
+                                                \Mustache\Tokenizer::OTAG => '[[',
+                                                \Mustache\Tokenizer::CTAG => ']]',
+                                                \Mustache\Tokenizer::LINE => 1,
+                                        ],
+                                ],
+                        ],
 
-    /**
-     * @dataProvider getInheritanceTokenSets
-     */
-    public function testParseWithInheritance($tokens, $expected)
-    {
-        $parser = new Mustache_Parser();
-        $parser->setPragmas(array(Mustache_Engine::PRAGMA_BLOCKS));
-        $this->assertEquals($expected, $parser->parse($tokens));
-    }
+                ];
+        }
 
-    public function getInheritanceTokenSets()
-    {
-        return array(
-            array(
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_PARENT,
-                        Mustache_Tokenizer::NAME  => 'foo',
-                        Mustache_Tokenizer::OTAG  => '{{',
-                        Mustache_Tokenizer::CTAG  => '}}',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 8,
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_BLOCK_VAR,
-                        Mustache_Tokenizer::NAME  => 'bar',
-                        Mustache_Tokenizer::OTAG  => '{{',
-                        Mustache_Tokenizer::CTAG  => '}}',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 16,
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::VALUE => 'baz',
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_END_SECTION,
-                        Mustache_Tokenizer::NAME  => 'bar',
-                        Mustache_Tokenizer::OTAG  => '{{',
-                        Mustache_Tokenizer::CTAG  => '}}',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 19,
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_END_SECTION,
-                        Mustache_Tokenizer::NAME  => 'foo',
-                        Mustache_Tokenizer::OTAG  => '{{',
-                        Mustache_Tokenizer::CTAG  => '}}',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 27,
-                    ),
-                ),
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_PARENT,
-                        Mustache_Tokenizer::NAME  => 'foo',
-                        Mustache_Tokenizer::OTAG  => '{{',
-                        Mustache_Tokenizer::CTAG  => '}}',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 8,
-                        Mustache_Tokenizer::END   => 27,
-                        Mustache_Tokenizer::NODES => array(
-                            array(
-                                Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_BLOCK_ARG,
-                                Mustache_Tokenizer::NAME  => 'bar',
-                                Mustache_Tokenizer::OTAG  => '{{',
-                                Mustache_Tokenizer::CTAG  => '}}',
-                                Mustache_Tokenizer::LINE  => 0,
-                                Mustache_Tokenizer::INDEX => 16,
-                                Mustache_Tokenizer::END   => 19,
-                                Mustache_Tokenizer::NODES => array(
-                                    array(
-                                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                                        Mustache_Tokenizer::LINE  => 0,
-                                        Mustache_Tokenizer::VALUE => 'baz',
-                                    ),
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            ),
 
-            array(
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE => Mustache_Tokenizer::T_BLOCK_VAR,
-                        Mustache_Tokenizer::NAME => 'foo',
-                        Mustache_Tokenizer::OTAG => '{{',
-                        Mustache_Tokenizer::CTAG => '}}',
-                        Mustache_Tokenizer::LINE => 0,
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::VALUE => 'bar',
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_END_SECTION,
-                        Mustache_Tokenizer::NAME  => 'foo',
-                        Mustache_Tokenizer::OTAG  => '{{',
-                        Mustache_Tokenizer::CTAG  => '}}',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 11,
-                    ),
-                ),
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_BLOCK_VAR,
-                        Mustache_Tokenizer::NAME  => 'foo',
-                        Mustache_Tokenizer::OTAG  => '{{',
-                        Mustache_Tokenizer::CTAG  => '}}',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::END   => 11,
-                        Mustache_Tokenizer::NODES => array(
-                            array(
-                                Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                                Mustache_Tokenizer::LINE  => 0,
-                                Mustache_Tokenizer::VALUE => 'bar',
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        );
-    }
+        /**
+         * @param $tokens
+         * @param $expected
+         *
+         * @dataProvider getInheritanceTokenSets
+         */
+        public function testParseWithInheritance($tokens, $expected)
+        {
+                $parser = new \Mustache\Parser();
+                $parser->setPragmas([\Mustache\Engine::PRAGMA_BLOCKS]);
+                $this->assertEquals($expected, $parser->parse($tokens));
+        }
 
-    /**
-     * @dataProvider getBadParseTrees
-     * @expectedException Mustache_Exception_SyntaxException
-     */
-    public function testParserThrowsExceptions($tokens)
-    {
-        $parser = new Mustache_Parser();
-        $parser->parse($tokens);
-    }
 
-    public function getBadParseTrees()
-    {
-        return array(
-            // no close
-            array(
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_SECTION,
-                        Mustache_Tokenizer::NAME  => 'parent',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 123,
-                    ),
-                ),
-            ),
+        /**
+         * @return array
+         * @author <ted@privacyzeker.nl>
+         */
+        public function getInheritanceTokenSets()
+        {
+                return [
+                        [
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_PARENT,
+                                                \Mustache\Tokenizer::NAME  => 'foo',
+                                                \Mustache\Tokenizer::OTAG  => '{{',
+                                                \Mustache\Tokenizer::CTAG  => '}}',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 8,
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_BLOCK_VAR,
+                                                \Mustache\Tokenizer::NAME  => 'bar',
+                                                \Mustache\Tokenizer::OTAG  => '{{',
+                                                \Mustache\Tokenizer::CTAG  => '}}',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 16,
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => 'baz',
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_END_SECTION,
+                                                \Mustache\Tokenizer::NAME  => 'bar',
+                                                \Mustache\Tokenizer::OTAG  => '{{',
+                                                \Mustache\Tokenizer::CTAG  => '}}',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 19,
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_END_SECTION,
+                                                \Mustache\Tokenizer::NAME  => 'foo',
+                                                \Mustache\Tokenizer::OTAG  => '{{',
+                                                \Mustache\Tokenizer::CTAG  => '}}',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 27,
+                                        ],
+                                ],
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_PARENT,
+                                                \Mustache\Tokenizer::NAME  => 'foo',
+                                                \Mustache\Tokenizer::OTAG  => '{{',
+                                                \Mustache\Tokenizer::CTAG  => '}}',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 8,
+                                                \Mustache\Tokenizer::END   => 27,
+                                                \Mustache\Tokenizer::NODES => [
+                                                        [
+                                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_BLOCK_ARG,
+                                                                \Mustache\Tokenizer::NAME  => 'bar',
+                                                                \Mustache\Tokenizer::OTAG  => '{{',
+                                                                \Mustache\Tokenizer::CTAG  => '}}',
+                                                                \Mustache\Tokenizer::LINE  => 0,
+                                                                \Mustache\Tokenizer::INDEX => 16,
+                                                                \Mustache\Tokenizer::END   => 19,
+                                                                \Mustache\Tokenizer::NODES => [
+                                                                        [
+                                                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                                                \Mustache\Tokenizer::LINE  => 0,
+                                                                                \Mustache\Tokenizer::VALUE => 'baz',
+                                                                        ],
+                                                                ],
+                                                        ],
+                                                ],
+                                        ],
+                                ],
+                        ],
 
-            // no close inverted
-            array(
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_INVERTED,
-                        Mustache_Tokenizer::NAME  => 'parent',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 123,
-                    ),
-                ),
-            ),
+                        [
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE => \Mustache\Tokenizer::T_BLOCK_VAR,
+                                                \Mustache\Tokenizer::NAME => 'foo',
+                                                \Mustache\Tokenizer::OTAG => '{{',
+                                                \Mustache\Tokenizer::CTAG => '}}',
+                                                \Mustache\Tokenizer::LINE => 0,
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => 'bar',
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_END_SECTION,
+                                                \Mustache\Tokenizer::NAME  => 'foo',
+                                                \Mustache\Tokenizer::OTAG  => '{{',
+                                                \Mustache\Tokenizer::CTAG  => '}}',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 11,
+                                        ],
+                                ],
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_BLOCK_VAR,
+                                                \Mustache\Tokenizer::NAME  => 'foo',
+                                                \Mustache\Tokenizer::OTAG  => '{{',
+                                                \Mustache\Tokenizer::CTAG  => '}}',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::END   => 11,
+                                                \Mustache\Tokenizer::NODES => [
+                                                        [
+                                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                                \Mustache\Tokenizer::LINE  => 0,
+                                                                \Mustache\Tokenizer::VALUE => 'bar',
+                                                        ],
+                                                ],
+                                        ],
+                                ],
+                        ],
+                ];
+        }
 
-            // no opening inverted
-            array(
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_END_SECTION,
-                        Mustache_Tokenizer::NAME  => 'parent',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 123,
-                    ),
-                ),
-            ),
 
-            // weird nesting
-            array(
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_SECTION,
-                        Mustache_Tokenizer::NAME  => 'parent',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 123,
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_SECTION,
-                        Mustache_Tokenizer::NAME  => 'child',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 123,
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_END_SECTION,
-                        Mustache_Tokenizer::NAME  => 'parent',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 123,
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_END_SECTION,
-                        Mustache_Tokenizer::NAME  => 'child',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 123,
-                    ),
-                ),
-            ),
+        /**
+         * @dataProvider getBadParseTrees
+         * @expectedException \Mustache\Exception\SyntaxException
+         */
+        public function testParserThrowsExceptions($tokens)
+        {
+                $parser = new \Mustache\Parser();
+                $parser->parse($tokens);
+        }
 
-            // This *would* be a valid inheritance parse tree, but that pragma
-            // isn't enabled here so it's going to fail :)
-            array(
-                array(
-                    array(
-                        Mustache_Tokenizer::TYPE => Mustache_Tokenizer::T_BLOCK_VAR,
-                        Mustache_Tokenizer::NAME => 'foo',
-                        Mustache_Tokenizer::OTAG => '{{',
-                        Mustache_Tokenizer::CTAG => '}}',
-                        Mustache_Tokenizer::LINE => 0,
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_TEXT,
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::VALUE => 'bar',
-                    ),
-                    array(
-                        Mustache_Tokenizer::TYPE  => Mustache_Tokenizer::T_END_SECTION,
-                        Mustache_Tokenizer::NAME  => 'foo',
-                        Mustache_Tokenizer::OTAG  => '{{',
-                        Mustache_Tokenizer::CTAG  => '}}',
-                        Mustache_Tokenizer::LINE  => 0,
-                        Mustache_Tokenizer::INDEX => 11,
-                    ),
-                ),
-            ),
-        );
-    }
+
+        /**
+         * @return array
+         * @author <ted@privacyzeker.nl>
+         */
+        public function getBadParseTrees()
+        {
+                return [
+                        // no close
+                        [
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_SECTION,
+                                                \Mustache\Tokenizer::NAME  => 'parent',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 123,
+                                        ],
+                                ],
+                        ],
+
+                        // no close inverted
+                        [
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_INVERTED,
+                                                \Mustache\Tokenizer::NAME  => 'parent',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 123,
+                                        ],
+                                ],
+                        ],
+
+                        // no opening inverted
+                        [
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_END_SECTION,
+                                                \Mustache\Tokenizer::NAME  => 'parent',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 123,
+                                        ],
+                                ],
+                        ],
+
+                        // weird nesting
+                        [
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_SECTION,
+                                                \Mustache\Tokenizer::NAME  => 'parent',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 123,
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_SECTION,
+                                                \Mustache\Tokenizer::NAME  => 'child',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 123,
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_END_SECTION,
+                                                \Mustache\Tokenizer::NAME  => 'parent',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 123,
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_END_SECTION,
+                                                \Mustache\Tokenizer::NAME  => 'child',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 123,
+                                        ],
+                                ],
+                        ],
+
+                        // This *would* be a valid inheritance parse tree, but that pragma
+                        // isn't enabled here so it's going to fail :)
+                        [
+                                [
+                                        [
+                                                \Mustache\Tokenizer::TYPE => \Mustache\Tokenizer::T_BLOCK_VAR,
+                                                \Mustache\Tokenizer::NAME => 'foo',
+                                                \Mustache\Tokenizer::OTAG => '{{',
+                                                \Mustache\Tokenizer::CTAG => '}}',
+                                                \Mustache\Tokenizer::LINE => 0,
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_TEXT,
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::VALUE => 'bar',
+                                        ],
+                                        [
+                                                \Mustache\Tokenizer::TYPE  => \Mustache\Tokenizer::T_END_SECTION,
+                                                \Mustache\Tokenizer::NAME  => 'foo',
+                                                \Mustache\Tokenizer::OTAG  => '{{',
+                                                \Mustache\Tokenizer::CTAG  => '}}',
+                                                \Mustache\Tokenizer::LINE  => 0,
+                                                \Mustache\Tokenizer::INDEX => 11,
+                                        ],
+                                ],
+                        ],
+                ];
+        }
 }

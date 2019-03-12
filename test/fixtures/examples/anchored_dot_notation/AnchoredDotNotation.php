@@ -11,45 +11,45 @@
 
 class AnchoredDotNotation
 {
-    public $genres = array(
-        array(
-            'name'      => 'Punk',
-            'subgenres' => array(
-                array(
-                    'name'      => 'Hardcore',
-                    'subgenres' => array(
-                        array(
-                            'name'      => 'First wave of black metal',
-                            'subgenres' => array(
-                                array('name' => 'Norwegian black metal'),
-                                array(
-                                    'name'      => 'Death metal',
-                                    'subgenres' => array(
-                                        array(
-                                            'name'      => 'Swedish death metal',
-                                            'subgenres' => array(
-                                                array('name' => 'New wave of American metal'),
-                                            ),
-                                        ),
-                                    ),
-                                ),
-                            ),
-                        ),
-                        array(
-                            'name'      => 'Thrash metal',
-                            'subgenres' => array(
-                                array('name' => 'Grindcore'),
-                                array(
-                                    'name'      => 'Metalcore',
-                                    'subgenres' => array(
-                                        array('name' => 'Nu metal'),
-                                    ),
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-    );
+        public $genres = [
+                [
+                        'name'      => 'Punk',
+                        'subgenres' => [
+                                [
+                                        'name'      => 'Hardcore',
+                                        'subgenres' => [
+                                                [
+                                                        'name'      => 'First wave of black metal',
+                                                        'subgenres' => [
+                                                                ['name' => 'Norwegian black metal'],
+                                                                [
+                                                                        'name'      => 'Death metal',
+                                                                        'subgenres' => [
+                                                                                [
+                                                                                        'name'      => 'Swedish death metal',
+                                                                                        'subgenres' => [
+                                                                                                ['name' => 'New wave of American metal'],
+                                                                                        ],
+                                                                                ],
+                                                                        ],
+                                                                ],
+                                                        ],
+                                                ],
+                                                [
+                                                        'name'      => 'Thrash metal',
+                                                        'subgenres' => [
+                                                                ['name' => 'Grindcore'],
+                                                                [
+                                                                        'name'      => 'Metalcore',
+                                                                        'subgenres' => [
+                                                                                ['name' => 'Nu metal'],
+                                                                        ],
+                                                                ],
+                                                        ],
+                                                ],
+                                        ],
+                                ],
+                        ],
+                ],
+        ];
 }
