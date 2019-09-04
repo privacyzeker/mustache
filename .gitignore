@@ -1,3 +1,4 @@
 .php_cs.cache
 mustache.php
 vendor
+/.idea/*
